@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            body { 
+                min-width: 420px; 
+                overflow-x: hidden; 
+                font-family: Arial, sans-serif; 
+                font-size: 12px; 
+            }
+            input, textarea { 
+                width: 420px; 
+            }
+            input#save { 
+                font-weight: bold; width: auto; 
+            }
+        </style>
+        
+    </head>
+    <body>
+        <p>Insert your text to encrypt here:</p>
+        <textarea autofocus id="in" cols="30" rows="10"></textarea>
+        <input type="submit" id="clickHere" value="Encrypt!" >
+        <p id="out"></p>
+         <!-- <textarea name="leon" id="out" cols="30" rows="10" placeholder="h"></textarea> -->
+
+        <script src="jquery.js"></script>
+        <script src="dict.js"></script>
+        <script src="popup.js"></script>
+    </body>
+</html>
