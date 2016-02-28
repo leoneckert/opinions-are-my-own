@@ -2,32 +2,6 @@ $( document ).ready(function() {
 	
 	look_for_targets();
 
-	// var text_to = "Who can decrypt this?"
-
-	// var encryptedtext = encrypted_line(text_to);
-	// console.log("TEXT TO POST::: ");
-	// console.log(encryptedtext);
-
-	// $('body').bind("DOMSubtreeModified", function(){
-	// 	look_for_targets();
-	// }, false);
-
-	// $('body').onmousemove=function(){
-	// 	look_for_targets();
-	// }, false);
-
-	// $('body').addEventListener("scroll", look_for_targets);
-
-	// var myVar;
-
-	// function myFunction() {
-	//     myVar = setInterval(alertFunc, 3000);
-	// }
-
-	// function alertFunc() {
-	//     look_for_targets();
-	// }
-
 	// (function(){
 	//     look_for_targets();
 	//     setTimeout(arguments.callee, 1000);
@@ -121,7 +95,7 @@ function look_for_targets(){
 
   				//now we can descramble the text:
   				descrambledText = descramble_line(actualText);
-  				// s.innerText = descrambledText;
+  				s.innerText = descrambledText;
 
   				console.log("[+] The descrambled text: " + descrambledText);
 
@@ -196,18 +170,43 @@ function look_for_targets(){
 
 }
 
+function convert_from_scrambled_charcode(bigNumber){
+	// if(bigNumber > -1 && bigNumber < 32){
+	// 	return bigNumber + 10272
+	// }else if(bigNumber > 31 && bigNumber < 64){
+	// 	return bigNumber + 9600 -31
+	// }else if(bigNumber > 63 && bigNumber < 75){
+	// 	return bigNumber + 9280 - 63
+	// }else if(bigNumber > 74 && bigNumber < 105){
+	// 	return bigNumber + 9568 - 74
+	// }else{
+	// 	return false
+	// }
 
+	if(bigNumber > 10271 && bigNumber < 10304){
+		return bigNumber - 10272
+	}else if(bigNumber > 9599 && bigNumber < 9632){
+		return bigNumber - 9600 + 32
+	}else if(bigNumber > 9279 && bigNumber < 9291){
+		return bigNumber - 9280 + 64
+	}else if(bigNumber > 9567 && bigNumber < 9600){
+		return bigNumber - 9568 + 75
+	}else{
+		return false
+	}
+}
 
 function descramble_line(text){
-	text_to_decrypt = text;
+	text_to_descramble = text;
 	decrypted_post = "";
 	// if (already_decrypted(text) == false){
-		for(var i = 0; i < text_to_decrypt.length; i++){
+		for(var i = 0; i < text_to_descramble.length; i++){
 			// console.log(post[i]);
 			// console.log(post.charCodeAt(i));
+			console.log("incoming code: " + text_to_descramble.charCodeAt(i) + " and after taking down: " + convert_from_scrambled_charcode(text_to_descramble.charCodeAt(i)));
 			// console.log( String.fromCharCode( post.charCodeAt(i) +10 ) );
-			console.log(text_to_decrypt.charCodeAt(i));
-			new_charcode = text_to_decrypt.charCodeAt(i) - i;
+			console.log(text_to_descramble.charCodeAt(i));
+			new_charcode = text_to_descramble.charCodeAt(i) - i;
 			//assume its -8
 			// -8 - 32 = - 40 -> 40 255 - 40
 			while(new_charcode < 32){
@@ -227,58 +226,11 @@ function descramble_line(text){
 		// console.log(text.length);
 		return decrypted_post
 	// }else{
-	// 	return text_to_decrypt
+	// 	return text_to_descramble
 	// }
 	
 }
 
-
-//http://jrgraphix.net/r/Unicode/4DC0-4DFF
-//http://jrgraphix.net/r/Unicode/1400-167F
-//http://jrgraphix.net/r/Unicode/2580-259F
-//http://jrgraphix.net/r/Unicode/2800-28FF
-// http://jrgraphix.net/r/Unicode/0300-036F
-
-
-
-// function already_decrypted(text){
-// 	decrypted_label = "[decrypted:] ";
-// 	decrypted = true;
-// 	for(var i = 0; i < decrypted_label.length; i++){
-// 		if(text[i] != decrypted_label[i]){
-// 			decrypted = false;
-// 		}
-// 	}
-// 	return decrypted
-// }
-
-function encrypted_line(text){
-	text_to_encrypt = text;
-	encrypted_post = "";
-	for(var i = 0; i < text_to_encrypt.length; i++){
-		// console.log(post[i]);
-		// console.log(post.charCodeAt(i));
-		// console.log( String.fromCharCode( post.charCodeAt(i) +10 ) );
-		new_charcode = text_to_encrypt.charCodeAt(i) + i;
-		//assume its 300
-		while(new_charcode > 127){
-			var x = Math.abs(new_charcode - 127);
-			new_charcode = 32 + x;
-		}
-
-		// console.log("NEW CHARFCODE EN: ");
-		// console.log(new_charcode);
-		if(new_charcode > 127 || new_charcode < 32){
-			// console.log("EERRRRRROORRRRRR");
-		}
-
-
-		encrypted_post = encrypted_post.concat(String.fromCharCode(new_charcode));
-	}
-	// console.log("length_encrypt: ");
-	// console.log(text.length);
-	return encrypted_post
-}
 
 
 
