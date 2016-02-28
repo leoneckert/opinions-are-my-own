@@ -49,6 +49,19 @@ function return_input(){
 // 	return "[http://leoneckert.com/]" + encrypted_post
 // }
 
+function convert_to_scrambled_charcode(smallNumber){
+	if(smallNumber > 0 && smallNumber < 32){
+		return smallNumber + 10272
+	}else if(smallNumber > 31 && smallNumber < 64){
+		return smallNumber + 9600 -31
+	}else if(smallNumber > 63 && smallNumber < 75){
+		return smallNumber + 9280 - 63
+	}else if(smallNumber > 74 && smallNumber < 105){
+		return smallNumber + 9568 - 74
+	}else{
+		return false
+	}
+}
 
 function scramble_line(text){
 	text_to_scramble = text;
@@ -68,19 +81,20 @@ function scramble_line(text){
 
 		// console.log(unicIdx);
 
-		while(unicIdx > 30){
-			var x = Math.abs(unicIdx - 30);
+		while(unicIdx > 96){
+			var x = Math.abs(unicIdx - 96);
 			unicIdx = 0 + x;
 		}
 
-		console.log("original charcode: " + orig_charCode + " --> newCode" + unicIdx);
+		console.log("original charcode: " + orig_charCode + " --> newCode: " + unicIdx);
 
-		if(unicIdx > 30 || unicIdx < 0){
+		if(unicIdx > 96 || unicIdx < 0){
 			console.log("something didn't work while scrambling");
 		}
 
-		scrambled_post = scrambled_post.concat(unicode[unicIdx]);
-		// scrambled_post = scrambled_post.concat(String.fromCharCode(19904 + unicIdx));
+		// scrambled_post = scrambled_post.concat(unicode[unicIdx]);\
+		new_charcode = convert_to_scrambled_charcode(unicIdx);
+		scrambled_post = scrambled_post.concat(String.fromCharCode(new_charcode));
 
 	}
 	var str = "";
@@ -88,7 +102,7 @@ function scramble_line(text){
 		var rn = Math.floor((Math.random() * 139));
 		str = str.concat(unicode[rn]);
 	}
-	// return "[http://leoneckert.com/]" + scrambled_post
+	return "[http://leoneckert.com/]" + scrambled_post
 	
 }
 

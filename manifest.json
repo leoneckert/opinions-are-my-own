@@ -12,17 +12,6 @@
         "http://*/*", 
         "https://*/*"
     ],
-    // "content_scripts": [
-    //     {
-    //       "matches": [
-    //         "https://www.facebook.com/"
-    //       ],
-    //       "js": [
-    //         "jquery.js",
-    //         "content_script.js"
-    //       ]
-    //     }
-    // ],
     "content_scripts": [
         {
           "matches": ["https://www.facebook.com/*"],
