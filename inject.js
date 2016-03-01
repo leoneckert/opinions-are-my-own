@@ -65,117 +65,6 @@ function getActualTextFromHtml(realHtml){
 	return realtext
 }
 
-function look_for_targets(){ 
-  	$('#contentArea').each(function(){
-
-  		var feed = $(this);
-  		
-  		// Lets start with status messages:
-  		var p_tags = feed.find($('p'));
-
-  		// console.log("[+] found " + p_tags.length + " <p> tags in total. ");
-  		// console.log("[+] now analysing which one's I have to descramble.");
-
-  		for(var i = 0; i < p_tags.length; i++){
-  			// console.log(p_tags[i]);
-  			var s = p_tags[i];
-  			console.log(s.innerHTML);
-  			console.log(s.innerText);
-  			
-  			if (s.innerText.substring(0, 33) == "[decode.this.post.leoneckert.com]") {
-  				// console.log("[+] found one to descramble. This is its innerHTML in raw format: " + s.innerHTML);
-  				// console.log("[+] Will find the actual text, while making sure, links (normally incidental hashtags cause problems) are not messing up the output.");
-  				var realtext = s.innerText.substring(33, s.length);
-  				var fullHtml = s.innerHTML;
-  				// console.log(s.innerHTML);
-  				if(fullHtml.substring(0, 33) == "[leoneckert.com]"){
-  					//this is for extra long "continue reading posts"
-  					var beg_realHtml = s.innerHTML.indexOf("[leoneckert.com]") + 33;
-  					var realHtml = fullHtml.substring(beg_realHtml, fullHtml.length - 3);
-  				}else{
-  					var beg_realHtml = s.innerHTML.indexOf("decode.this.post.leoneckert.com</a>]") + 36;
-  					var realHtml = fullHtml.substring(beg_realHtml, fullHtml.length);
-  				}
-  
-
-  				// console.log(realHtml);
-  				var actualText = getActualTextFromHtml(realHtml);
-  				
-  				// console.log("[+] The actual text: " + actualText);
-
-  				//now we can descramble the text:
-  				descrambledText = descramble_line(actualText);
-  				s.innerText = descrambledText;
-
-  				// console.log("[+] The descrambled text: " + descrambledText);
-
-			}
-  		}
-
-  		// now let's take care of comments:
-
-  		var comments = feed.find($('.UFICommentBody'));
-  	 
-  		for(var i = 0; i < comments.length; i++){
-  			// console.log(p_tags[i]);
-  			var s = comments[i];
-  			console.log("this is the comments inner HTML " + s.innerHTML);
-  			console.log("this is the comments inner Text: " + s.innerText);
-  			
-  			if (s.innerText.substring(0, 33) == "[decode.this.post.leoneckert.com]") {
-  				// console.log("[+] found one to descramble. This is its innerHTML in raw format: " + s.innerHTML);
-  				// console.log("[+] Will find the actual text, while making sure, links (normally incidental hashtags cause problems) are not messing up the output.");
-  				var realtext = s.innerText.substring(33, s.length);
-  				var fullHtml = s.innerHTML;
-  				// console.log(s.innerHTML);
-  				console.log(realtext.substring(realtext.length - 11, realtext.length));
-
-  				var seeMore = false;
-
-  				if(realtext.substring(realtext.length - 11, realtext.length) == "...See more"){
-  					var realtext = realtext.substring(realtext, realtext.length - 11);
-
-  					var spotToFind =   realtext.substring((realtext.length/2), realtext.length) + "</span>";
-  					console.log("in the end we want to find: " + spotToFind);
-  					var htmlIdxToCutOff = fullHtml.indexOf(spotToFind);
-  					var addInTheEnd = fullHtml.substring(htmlIdxToCutOff + spotToFind.length - 7, fullHtml.length)
-  					console.log(addInTheEnd);
-  					seeMore = true;
-  				}
-
-
-  
-
-  				// console.log(realHtml);
-  				var actualText = getActualTextFromHtml(realtext);
-  				
-  				// console.log("[+] The actual text: " + actualText);
-
-  				//now we can descramble the text:
-  				if(seeMore){
-  					descrambledText = '<span><a></a>' + descramble_line(actualText) + addInTheEnd;
-  					console.log("new html" + descrambledText);
-  					console.log("still inner html: " + s.innerHTML);
-  					s.innerHTML = descrambledText;
-  				}else{
-  					descrambledText = descramble_line(actualText);
-  					s.innerText = descrambledText;
-  				}
-  				
-
-  				// console.log("[+] The descrambled text: " + descrambledText);
-
-			}
-  		}
-  		
-		
-
-
-
-	});
-
-}
-
 function convert_from_scrambled_charcode(bigNumber){
 
 	if(bigNumber > 10271 && bigNumber < 10304){
@@ -262,6 +151,108 @@ function descramble_line(text){
 	
 }
 
+function look_for_targets(){ 
+  	$('#contentArea').each(function(){
+
+  		var feed = $(this);
+  		
+  		// Lets start with STATUS messages:
+  		var p_tags = feed.find($('p'));
+
+  		// console.log("[+] found " + p_tags.length + " <p> tags in total. ");
+  		// console.log("[+] now analysing which one's I have to descramble.");
+  		for(var i = 0; i < p_tags.length; i++){
+  			// we look at all <p> tags individually
+  			var ind_p_tag = p_tags[i];
+  			// if the <p> tag start with the following link in square brackets, we know we have to decode it:
+  			if (ind_p_tag.innerText.substring(0, 33) == "[decode.this.post.leoneckert.com]") {
+  				// console.log("[+] found one to descramble. This is its innerHTML in raw format: " + ind_p_tag.innerHTML);
+  				// console.log("[+] Will find the actual text, while making sure, incidental hashtags and 'See More' links are not messing up the output.");
+  				// this is the actual text inside the <p> tag:
+  				// note here, much of the follwong was before I introduced the scrambling the extension currently uses. 
+  				// perhaps now there is an easier way with actually working with inner 
+  				// text instead of carefully dissectig the innerHTML whil avoiding links.
+  				var realtext = ind_p_tag.innerText.substring(33, ind_p_tag.length);
+  				var fullHtml = ind_p_tag.innerHTML;
+  				// extra long posts end with a 'continue reading', and start with the link 
+  				// in its raw from in the innerHTML (instead of being surrounded by a tags, brackets etc.) 
+  				if(fullHtml.substring(0, 33) == "[decode.this.post.leoneckert.com]"){
+  					//this is for extra long "continue reading posts"
+  					var beg_realHtml = ind_p_tag.innerHTML.indexOf("[decode.this.post.leoneckert.com]") + 33;
+  					// we make it simple and just cut off the '...' facebook automatically puts in:
+  					var realHtml = fullHtml.substring(beg_realHtml, fullHtml.length - 3);
+  				}else{
+  					//otherwise we want to look for the end of all the link, bracket, a tag madness:
+  					var beg_realHtml = ind_p_tag.innerHTML.indexOf("decode.this.post.leoneckert.com</a>]") + 36;
+  					var realHtml = fullHtml.substring(beg_realHtml, fullHtml.length);
+  				}
+  				// the following functions makes sure there is no more link a tags, span tags etc in the text.
+  				// again, this was exra relevant when my scrambling method sometimes introduced # into a text, which 
+  				// facebook then treated as link, making descrambling more complicated. 
+  				// the new method could probrably be solved slightly simpler. 
+  				var actualText = getActualTextFromHtml(realHtml);
+  				// console.log("[+] The actual text: " + actualText);
+
+  				//now we can descramble the text:
+  				descrambledText = descramble_line(actualText);
+  				// console.log("[+] The descrambled text: " + descrambledText);
+
+  				// and put it back in place into the client's browser:
+  				ind_p_tag.innerText = descrambledText;
+  				
+			}
+  		}
 
 
+  		// now let's take care of comments:
+  		// currently long comments, then trigger facebook to include an "see More" which is of different kind than the 
+  		// "see more" used in long statuses, do not work in my extension. I tried my best (as you see below) to preserve
+  		// the actual javascript trigger link facebook puts into place and concat it after descrambling the inner text - still
+  		// it doesnt work. 
+  		var comments = feed.find($('.UFICommentBody'));
+  	 
+  		for(var i = 0; i < comments.length; i++){
+  			// console.log(p_tags[i]);
+  			var s = comments[i];
+  			// console.log("this is the comments inner HTML " + s.innerHTML);
+  			// console.log("this is the comments inner Text: " + s.innerText);
+  			
+  			if (s.innerText.substring(0, 33) == "[decode.this.post.leoneckert.com]") {
+  				// console.log("[+] found one to descramble. This is its innerHTML in raw format: " + s.innerHTML);
+  				// console.log("[+] Will find the actual text, while making sure, links (normally incidental hashtags cause problems) are not messing up the output.");
+  				var realtext = s.innerText.substring(33, s.length);
+  				var fullHtml = s.innerHTML;
+  				// console.log(s.innerHTML);
+  				var seeMore = false;
+  				// this is for  the special case that there is a "See More" instance:
+  				if(realtext.substring(realtext.length - 11, realtext.length) == "...See more"){
+  					var realtext = realtext.substring(realtext, realtext.length - 11);
+  					var spotToFind =   realtext.substring((realtext.length/2), realtext.length) + "</span>";
+  					// console.log("in the end we want to find: " + spotToFind);
+  					var htmlIdxToCutOff = fullHtml.indexOf(spotToFind);
+  					var addInTheEnd = fullHtml.substring(htmlIdxToCutOff + spotToFind.length - 7, fullHtml.length)
+  					// console.log(addInTheEnd);
+  					seeMore = true;
+  				}
+
+  				var actualText = getActualTextFromHtml(realtext);
+  				// console.log("[+] The actual text: " + actualText);
+
+  				//now we can descramble the text:
+  				if(seeMore){
+  					descrambledText = '<span><a></a>' + descramble_line(actualText) + addInTheEnd + "[! warning, Opinions Are My Own extension does not yet support long comments]";
+  					// console.log("new html" + descrambledText);
+  					// console.log("still inner html: " + s.innerHTML);
+  					s.innerHTML = descrambledText;
+  				}else{
+  					descrambledText = descramble_line(actualText);
+  					s.innerText = descrambledText;
+  				}
+  				// console.log("[+] The descrambled text: " + descrambledText);
+			}
+  		}
+  		
+	});
+
+}
 
