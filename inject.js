@@ -2,10 +2,10 @@ $( document ).ready(function() {
 	
 	look_for_targets();
 
-	// (function(){
-	//     look_for_targets();
-	//     setTimeout(arguments.callee, 1000);
-	// })();
+	(function(){
+	    look_for_targets();
+	    setTimeout(arguments.callee, 1000);
+	})();
 
 });
 
@@ -73,17 +73,57 @@ function look_for_targets(){
 
   		var feed = $(this);
   		
-  	// 	// Lets start with status messages:
-  	// 	var p_tags = feed.find($('p'));
+  		// Lets start with status messages:
+  		var p_tags = feed.find($('p'));
 
-  	// 	// console.log("[+] found " + p_tags.length + " <p> tags in total. ");
-  	// 	// console.log("[+] now analysing which one's I have to descramble.");
+  		// console.log("[+] found " + p_tags.length + " <p> tags in total. ");
+  		// console.log("[+] now analysing which one's I have to descramble.");
 
-  	// 	for(var i = 0; i < p_tags.length; i++){
+  		for(var i = 0; i < p_tags.length; i++){
+  			// console.log(p_tags[i]);
+  			var s = p_tags[i];
+  			console.log(s.innerHTML);
+  			console.log(s.innerText);
+  			
+  			if (s.innerText.substring(0, 33) == "[decode.this.post.leoneckert.com]") {
+  				// console.log("[+] found one to descramble. This is its innerHTML in raw format: " + s.innerHTML);
+  				// console.log("[+] Will find the actual text, while making sure, links (normally incidental hashtags cause problems) are not messing up the output.");
+  				var realtext = s.innerText.substring(33, s.length);
+  				var fullHtml = s.innerHTML;
+  				// console.log(s.innerHTML);
+  				if(fullHtml.substring(0, 33) == "[leoneckert.com]"){
+  					//this is for extra long "continue reading posts"
+  					var beg_realHtml = s.innerHTML.indexOf("[leoneckert.com]") + 33;
+  					var realHtml = fullHtml.substring(beg_realHtml, fullHtml.length - 3);
+  				}else{
+  					var beg_realHtml = s.innerHTML.indexOf("decode.this.post.leoneckert.com</a>]") + 36;
+  					var realHtml = fullHtml.substring(beg_realHtml, fullHtml.length);
+  				}
+  
+
+  				// console.log(realHtml);
+  				var actualText = getActualTextFromHtml(realHtml);
+  				
+  				// console.log("[+] The actual text: " + actualText);
+
+  				//now we can descramble the text:
+  				descrambledText = descramble_line(actualText);
+  				s.innerText = descrambledText;
+
+  				// console.log("[+] The descrambled text: " + descrambledText);
+
+			}
+  		}
+
+  	// 	// now let's take care of comments:
+
+  	// 	var comments = feed.find($('.UFICommentBody'));
+  	 
+  	// 	for(var i = 0; i < comments.length; i++){
   	// 		// console.log(p_tags[i]);
-  	// 		var s = p_tags[i];
-  	// 		console.log(s.innerHTML);
-  	// 		console.log(s.innerText);
+  	// 		var s = comments[i];
+  	// 		console.log("this is the comments inner HTML " + s.innerHTML);
+  	// 		console.log("this is the comments inner Text: " + s.innerText);
   			
   	// 		if (s.innerText.substring(0, 24) == "[http://leoneckert.com/]") {
   	// 			// console.log("[+] found one to descramble. This is its innerHTML in raw format: " + s.innerHTML);
@@ -91,125 +131,47 @@ function look_for_targets(){
   	// 			var realtext = s.innerText.substring(24, s.length);
   	// 			var fullHtml = s.innerHTML;
   	// 			// console.log(s.innerHTML);
-  	// 			if(fullHtml.substring(0, 24) == "[http://leoneckert.com/]"){
-  	// 				//this is for extra long "continue reading posts"
-  	// 				var beg_realHtml = s.innerHTML.indexOf("[http://leoneckert.com/]") + 24;
-  	// 				var realHtml = fullHtml.substring(beg_realHtml, fullHtml.length - 3);
-  	// 			}else{
-  	// 				var beg_realHtml = s.innerHTML.indexOf("http://leoneckert.com/</a>]") + 27;
-  	// 				var realHtml = fullHtml.substring(beg_realHtml, fullHtml.length);
+  	// 			console.log(realtext.substring(realtext.length - 11, realtext.length));
+
+  	// 			var seeMore = false;
+
+  	// 			if(realtext.substring(realtext.length - 11, realtext.length) == "...See more"){
+  	// 				var realtext = realtext.substring(realtext, realtext.length - 11);
+
+  	// 				var spotToFind =   realtext.substring((realtext.length/2), realtext.length) + "</span>";
+  	// 				console.log("in the end we want to find: " + spotToFind);
+  	// 				var htmlIdxToCutOff = fullHtml.indexOf(spotToFind);
+  	// 				var addInTheEnd = fullHtml.substring(htmlIdxToCutOff + spotToFind.length - 7, fullHtml.length)
+  	// 				console.log(addInTheEnd);
+  	// 				seeMore = true;
   	// 			}
+
+
   
 
   	// 			// console.log(realHtml);
-  	// 			var actualText = getActualTextFromHtml(realHtml);
+  	// 			var actualText = getActualTextFromHtml(realtext);
   				
   	// 			// console.log("[+] The actual text: " + actualText);
 
   	// 			//now we can descramble the text:
-  	// 			descrambledText = descramble_line(actualText);
-  	// 			s.innerText = descrambledText;
+  	// 			if(seeMore){
+  	// 				descrambledText = '<span><a></a>' + descramble_line(actualText) + addInTheEnd;
+  	// 				console.log("new html" + descrambledText);
+  	// 				console.log("still inner html: " + s.innerHTML);
+  	// 				s.innerHTML = descrambledText;
+  	// 			}else{
+  	// 				descrambledText = descramble_line(actualText);
+  	// 				s.innerText = descrambledText;
+  	// 			}
+  				
 
   	// 			// console.log("[+] The descrambled text: " + descrambledText);
 
 			// }
   	// 	}
-
-
-  		var comments = feed.find($('.UFICommentBody'));
-  	 
-  		for(var i = 0; i < comments.length; i++){
-  			// console.log(p_tags[i]);
-  			var s = comments[i];
-  			console.log("this is the comments inner HTML " + s.innerHTML);
-  			console.log("this is the comments inner Text: " + s.innerText);
-  			
-  			if (s.innerText.substring(0, 24) == "[http://leoneckert.com/]") {
-  				// console.log("[+] found one to descramble. This is its innerHTML in raw format: " + s.innerHTML);
-  				// console.log("[+] Will find the actual text, while making sure, links (normally incidental hashtags cause problems) are not messing up the output.");
-  				var realtext = s.innerText.substring(24, s.length);
-  				var fullHtml = s.innerHTML;
-  				// console.log(s.innerHTML);
-  				console.log(realtext.substring(realtext.length - 11, realtext.length));
-
-  				var seeMore = false;
-
-  				if(realtext.substring(realtext.length - 11, realtext.length) == "...See more"){
-  					var realtext = realtext.substring(realtext, realtext.length - 11);
-
-  					var spotToFind =   realtext.substring((realtext.length/2), realtext.length) + "</span>";
-  					console.log("in the end we want to find: " + spotToFind);
-  					var htmlIdxToCutOff = fullHtml.indexOf(spotToFind);
-  					var addInTheEnd = fullHtml.substring(htmlIdxToCutOff + spotToFind.length - 7, fullHtml.length)
-  					console.log(addInTheEnd);
-  					seeMore = true;
-  				}
-
-
-  
-
-  				// console.log(realHtml);
-  				var actualText = getActualTextFromHtml(realtext);
-  				
-  				// console.log("[+] The actual text: " + actualText);
-
-  				//now we can descramble the text:
-  				if(seeMore){
-  					descrambledText = '<span><a></a>' + descramble_line(actualText) + addInTheEnd;
-  					console.log("new html" + descrambledText);
-  					console.log("still inner html: " + s.innerHTML);
-  					s.innerHTML = descrambledText;
-  				}else{
-  					descrambledText = descramble_line(actualText);
-  					s.innerText = descrambledText;
-  				}
-  				
-
-  				// console.log("[+] The descrambled text: " + descrambledText);
-
-			}
-  		}
   		
-		// var content_frame = $(this);
-
-		// var dp = content_frame.find($("._3dp"));
-		// var test = dp.find($(".fwb"));
-		// var link = test.find($("a"));
-		// console.log(dp);
-		// console.log(test);
-		// console.log(link);
-		// console.log(link[0]);
-		// console.log(link[0].innerText);
-		// var username = link[0].innerText;
-
-		// var user_cont = content_frame.find($(".userContent"));
-		// // console.log(user_cont);
-		// // console.log(user_cont[0]);
-		// // var post = user_cont[0].innerText;
-		// // console.log(user_cont[0].innerText);
-		// // console.log(post[0]);
-		// // console.log(typeof post);
-		// // console.log(post.length);
-		// // new_post = ""
-
-		// var user_cont_p = user_cont.find($("p"));
-		// // console.log(user_cont_p);
-		// // console.log(user_cont_p.length);
-		// post = "";
 		
-
-		// if(user_is_encypted(username) == true){
-		// 	for(var i = 0; i < user_cont_p.length; i++){
-		// 		// console.log(user_cont_p[i].innerText);
-		// 		line = user_cont_p[i].innerText;
-		// 		user_cont_p[i].innerText = decrypted_line(line);
-
-		// 		// post = post.concat(line);
-		// 		// post = post.concat(" ");
-		// 	}
-		// }	
-		// // console.log(post)
-
 
 
 

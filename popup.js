@@ -83,7 +83,7 @@ function scramble_line(text){
 		str = str.concat(unicode[rn]);
 	}
 	console.log("--------------------------------------------------------------------------------");
-	return "[http://leoneckert.com/]" + scrambled_post
+	return "[decode.this.post.leoneckert.com]" + scrambled_post
 	
 }
 
