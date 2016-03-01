@@ -44,12 +44,6 @@ function getActualTextFromHtml(realHtml){
 			if(potentialSeeMoreSpan == '<span class="text_exposed_hide">'){
 				var afterDots = posLink + 32 + 3;
 				subrealHtml = subrealHtml.substring(0, posLink) + subrealHtml.substring(afterDots, subrealHtml.length);
-			}else if(potentialSeeMoreSpan == '<span class="text_exposed_link">'){
-				realtext = realtext + subrealHtml.substring(0, posLink);
-				console.log("realtext in here:" + realtext);
-				subrealHtml = subrealHtml.substring(0, posLink);
-				console.log("new subreal in here:" + subrealHtml);
-				break
 			}
 		}else if(posENDLink != -1){
 			posLink = posENDLink;
@@ -79,18 +73,56 @@ function look_for_targets(){
 
   		var feed = $(this);
   		
-  		// Lets start with status messages:
-  		var p_tags = feed.find($('p'));
+  	// 	// Lets start with status messages:
+  	// 	var p_tags = feed.find($('p'));
 
-  		// console.log("[+] found " + p_tags.length + " <p> tags in total. ");
-  		// console.log("[+] now analysing which one's I have to descramble.");
+  	// 	// console.log("[+] found " + p_tags.length + " <p> tags in total. ");
+  	// 	// console.log("[+] now analysing which one's I have to descramble.");
+
+  	// 	for(var i = 0; i < p_tags.length; i++){
+  	// 		// console.log(p_tags[i]);
+  	// 		var s = p_tags[i];
+  	// 		console.log(s.innerHTML);
+  	// 		console.log(s.innerText);
+  			
+  	// 		if (s.innerText.substring(0, 24) == "[http://leoneckert.com/]") {
+  	// 			// console.log("[+] found one to descramble. This is its innerHTML in raw format: " + s.innerHTML);
+  	// 			// console.log("[+] Will find the actual text, while making sure, links (normally incidental hashtags cause problems) are not messing up the output.");
+  	// 			var realtext = s.innerText.substring(24, s.length);
+  	// 			var fullHtml = s.innerHTML;
+  	// 			// console.log(s.innerHTML);
+  	// 			if(fullHtml.substring(0, 24) == "[http://leoneckert.com/]"){
+  	// 				//this is for extra long "continue reading posts"
+  	// 				var beg_realHtml = s.innerHTML.indexOf("[http://leoneckert.com/]") + 24;
+  	// 				var realHtml = fullHtml.substring(beg_realHtml, fullHtml.length - 3);
+  	// 			}else{
+  	// 				var beg_realHtml = s.innerHTML.indexOf("http://leoneckert.com/</a>]") + 27;
+  	// 				var realHtml = fullHtml.substring(beg_realHtml, fullHtml.length);
+  	// 			}
+  
+
+  	// 			// console.log(realHtml);
+  	// 			var actualText = getActualTextFromHtml(realHtml);
+  				
+  	// 			// console.log("[+] The actual text: " + actualText);
+
+  	// 			//now we can descramble the text:
+  	// 			descrambledText = descramble_line(actualText);
+  	// 			s.innerText = descrambledText;
+
+  	// 			// console.log("[+] The descrambled text: " + descrambledText);
+
+			// }
+  	// 	}
 
 
-  		for(var i = 0; i < p_tags.length; i++){
+  		var comments = feed.find($('.UFICommentBody'));
+  	 
+  		for(var i = 0; i < comments.length; i++){
   			// console.log(p_tags[i]);
-  			var s = p_tags[i];
-  			console.log(s.innerHTML);
-  			console.log(s.innerText);
+  			var s = comments[i];
+  			console.log("this is the comments inner HTML " + s.innerHTML);
+  			console.log("this is the comments inner Text: " + s.innerText);
   			
   			if (s.innerText.substring(0, 24) == "[http://leoneckert.com/]") {
   				// console.log("[+] found one to descramble. This is its innerHTML in raw format: " + s.innerHTML);
@@ -98,50 +130,45 @@ function look_for_targets(){
   				var realtext = s.innerText.substring(24, s.length);
   				var fullHtml = s.innerHTML;
   				// console.log(s.innerHTML);
-  				if(fullHtml.substring(0, 24) == "[http://leoneckert.com/]"){
-  					//this is for extra long "continue reading posts"
-  					var beg_realHtml = s.innerHTML.indexOf("[http://leoneckert.com/]") + 24;
-  					var realHtml = fullHtml.substring(beg_realHtml, fullHtml.length - 3);
-  				}else{
-  					var beg_realHtml = s.innerHTML.indexOf("http://leoneckert.com/</a>]") + 27;
-  					var realHtml = fullHtml.substring(beg_realHtml, fullHtml.length);
+  				console.log(realtext.substring(realtext.length - 11, realtext.length));
+
+  				var seeMore = false;
+
+  				if(realtext.substring(realtext.length - 11, realtext.length) == "...See more"){
+  					var realtext = realtext.substring(realtext, realtext.length - 11);
+
+  					var spotToFind =   realtext.substring((realtext.length/2), realtext.length) + "</span>";
+  					console.log("in the end we want to find: " + spotToFind);
+  					var htmlIdxToCutOff = fullHtml.indexOf(spotToFind);
+  					var addInTheEnd = fullHtml.substring(htmlIdxToCutOff + spotToFind.length - 7, fullHtml.length)
+  					console.log(addInTheEnd);
+  					seeMore = true;
   				}
+
+
   
 
   				// console.log(realHtml);
-  				var actualText = getActualTextFromHtml(realHtml);
+  				var actualText = getActualTextFromHtml(realtext);
   				
   				// console.log("[+] The actual text: " + actualText);
 
   				//now we can descramble the text:
-  				descrambledText = descramble_line(actualText);
-  				s.innerText = descrambledText;
+  				if(seeMore){
+  					descrambledText = '<span><a></a>' + descramble_line(actualText) + addInTheEnd;
+  					console.log("new html" + descrambledText);
+  					console.log("still inner html: " + s.innerHTML);
+  					s.innerHTML = descrambledText;
+  				}else{
+  					descrambledText = descramble_line(actualText);
+  					s.innerText = descrambledText;
+  				}
+  				
 
   				// console.log("[+] The descrambled text: " + descrambledText);
 
 			}
   		}
-
-
-  		// var comments = feed.find($('.UFICommentBody'));
-  		// // console.log(comments)
-  		// // console.log(comments[0])
-  		// console.log(comments.length)
-
-  		// for(var i = 0; i < comments.length; i++){
-  		// 	var c = comments[i];
-  		// 	// console.log(c);
-  		// 	console.log(c.innerHTML);
-  		// 	console.log(c.innerText);
-
-  		// 	// var commentsbody = c.find($('.UFICommentBody'));
-  		// 	// // console.log(comments[i])
-  			
-  		// 	// console.log("coutn@" + i);
-  		// 	// console.log(comments[i]);
-  		// 	// console.log(commentsbody);
-  		// }
-  		
   		
 		// var content_frame = $(this);
 
@@ -204,41 +231,6 @@ function convert_from_scrambled_charcode(bigNumber){
 		return false
 	}
 }
-
-// function descramble_line(text){
-// 	text_to_descramble = text;
-// 	decrypted_post = "";
-// 	// if (already_decrypted(text) == false){
-// 		for(var i = 0; i < text_to_descramble.length; i++){
-// 			// console.log(post[i]);
-// 			// console.log(post.charCodeAt(i));
-// 			console.log("incoming code: " + text_to_descramble.charCodeAt(i) + " and after taking down: " + convert_from_scrambled_charcode(text_to_descramble.charCodeAt(i)));
-// 			// console.log( String.fromCharCode( post.charCodeAt(i) +10 ) );
-// 			console.log(text_to_descramble.charCodeAt(i));
-// 			new_charcode = text_to_descramble.charCodeAt(i) - i;
-// 			//assume its -8
-// 			// -8 - 32 = - 40 -> 40 255 - 40
-// 			while(new_charcode < 32){
-// 				var x = Math.abs(new_charcode - 32);
-// 				new_charcode = 127 - x;
-// 			}
-// 			// console.log("NEW CHARFCODE DE: ");
-// 			// console.log(new_charcode);
-// 			// if(new_charcode > 255 || new_charcode < 32){
-// 			// 	console.log("EERRRRRROORRRRRR");
-// 			// }
-
-// 			decrypted_post = decrypted_post.concat(String.fromCharCode(20000));
-// 			// decrypted_post = decrypted_post.concat('\u4DE4');
-// 		}
-// 		// console.log("length_decrypt: ");
-// 		// console.log(text.length);
-// 		return decrypted_post
-// 	// }else{
-// 	// 	return text_to_descramble
-// 	// }
-	
-// }
 
 function descramble_line(text){
 	// console.log(text);

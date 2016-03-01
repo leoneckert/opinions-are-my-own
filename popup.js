@@ -17,37 +17,6 @@ function return_input(){
 	$('#out').html(scrambled_post);
 }
 
-// function encrypted_line(text){
-// 	text_to_encrypt = text;
-// 	encrypted_post = "";
-// 	for(var i = 0; i < text_to_encrypt.length; i++){
-// 		// console.log(post[i]);
-// 		// console.log(post.charCodeAt(i));
-// 		// console.log( String.fromCharCode( post.charCodeAt(i) +10 ) );
-// 		new_charcode = text_to_encrypt.charCodeAt(i) + i;
-// 		console.log(text_to_encrypt.charCodeAt(i));
-// 		//assume its 300
-// 		while(new_charcode > 127){
-// 			var x = Math.abs(new_charcode - 127);
-// 			new_charcode = 32 + x;
-// 		}
-
-// 		// console.log("NEW CHARFCODE EN: ");
-// 		// console.log(new_charcode);
-// 		if(new_charcode > 127 || new_charcode < 32){
-// 			// console.log("EERRRRRROORRRRRR");
-// 		}
-
-
-// 		// encrypted_post = encrypted_post.concat(String.fromCharCode(new_charcode));
-// 		encrypted_post = encrypted_post.concat(unicode[0]);
-// 		// encrypted_post = encrypted_post.concat(\u4DC0;
-//  // + String.unicode[0]
-// 	}
-// 	// console.log("length_encrypt: ");
-// 	// console.log(text.length);
-// 	return "[http://leoneckert.com/]" + encrypted_post
-// }
 
 function convert_to_scrambled_charcode(smallNumber){
 	if(smallNumber > -1 && smallNumber < 32){
