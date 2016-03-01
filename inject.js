@@ -10,14 +10,65 @@ $( document ).ready(function() {
 });
 
 
+// function getActualTextFromHtml(realHtml){
+// 	var subrealHtml = realHtml.substring(0, realHtml.length);
+// 	var linksInRealHtml = false;
+
+// 	if(subrealHtml.indexOf("<a") > -1 || subrealHtml.indexOf("<span") > -1 || subrealHtml.indexOf("</") > -1){
+// 		var realtext = "";
+// 		linksInRealHtml = true;
+
+// 	}else{
+// 		var realtext = subrealHtml;
+// 	}
+  				
+// 	while(subrealHtml.indexOf("<a") > -1 || subrealHtml.indexOf("<span") > -1 || subrealHtml.indexOf("</") > -1){
+
+// 		var posALink = subrealHtml.indexOf("<a");
+// 		// console.log("next a tag: " + posALink);
+// 		var posSPANLink = subrealHtml.indexOf("<span");
+// 		// console.log("next span tag: " + posSPANLink);
+// 		var posENDLink = subrealHtml.indexOf("</");
+// 		// console.log("next END tag: " + posENDLink);
+
+// 		if(posALink < posSPANLink && posALink < posENDLink && posALink != -1){
+// 			posLink = posALink;
+// 			// console.log("the closes critical element is <a tag");
+// 		}else if(posSPANLink < posENDLink && posSPANLink != -1){
+// 			posLink = posSPANLink;
+
+// 			console.log("the closes critical element is <span tag");
+// 		}else if(posENDLink != -1){
+// 			posLink = posENDLink;
+// 			// console.log("the closes critical element is /*> tag");
+// 		}else{
+// 			// console.log("something went wrong when comparint the three cirtical chars with each other");
+// 		}
+
+// 		realtext = realtext + subrealHtml.substring(0, posLink);
+// 		// console.log("real after: " + realtext);
+// 		var startContent = subrealHtml.indexOf(">") + 1;
+// 		// console.log(startContent);
+// 		subrealHtml = subrealHtml.substring(startContent, subrealHtml.length);
+// 		// break
+// 		// console.log("here the new subreal: " + subrealHtml);
+// 		// console.log(subrealHtml.indexOf("<a") > -1 || subrealHtml.indexOf("<span") > -1);
+// 	}
+// 	if(linksInRealHtml){
+// 		realtext = realtext + subrealHtml;
+// 	}
+	
+// 	return realtext
+// }
+
 function getActualTextFromHtml(realHtml){
 	var subrealHtml = realHtml.substring(0, realHtml.length);
 	var linksInRealHtml = false;
+	console.log("the full realhtml is this: " + subrealHtml);
 
 	if(subrealHtml.indexOf("<a") > -1 || subrealHtml.indexOf("<span") > -1 || subrealHtml.indexOf("</") > -1){
 		var realtext = "";
 		linksInRealHtml = true;
-
 	}else{
 		var realtext = subrealHtml;
 	}
@@ -25,33 +76,38 @@ function getActualTextFromHtml(realHtml){
 	while(subrealHtml.indexOf("<a") > -1 || subrealHtml.indexOf("<span") > -1 || subrealHtml.indexOf("</") > -1){
 
 		var posALink = subrealHtml.indexOf("<a");
-		console.log("next a tag: " + posALink);
+		// console.log("next a tag: " + posALink);
 		var posSPANLink = subrealHtml.indexOf("<span");
-		console.log("next span tag: " + posSPANLink);
+		// console.log("next span tag: " + posSPANLink);
 		var posENDLink = subrealHtml.indexOf("</");
-		console.log("next END tag: " + posENDLink);
+		// console.log("next END tag: " + posENDLink);
 
 		if(posALink < posSPANLink && posALink < posENDLink && posALink != -1){
 			posLink = posALink;
-			console.log("the closes critical element is <a tag");
+			// console.log("the closes critical element is <a tag");
 		}else if(posSPANLink < posENDLink && posSPANLink != -1){
 			posLink = posSPANLink;
-
+			//here an exception for "See more "spans
+			console.log(subrealHtml.substring(posLink, posLink + 32))
 			console.log("the closes critical element is <span tag");
+			if(subrealHtml.substring(posLink, posLink + 32) == '<span class="text_exposed_hide">'){
+				var afterDots = posLink + 32 + 3;
+				subrealHtml = subrealHtml.substring(0, posLink) + subrealHtml.substring(afterDots, subrealHtml.length);
+			}
 		}else if(posENDLink != -1){
 			posLink = posENDLink;
-			console.log("the closes critical element is /*> tag");
+			// console.log("the closes critical element is /*> tag");
 		}else{
-			console.log("something went wrong when comparint the three cirtical chars with each other");
+			// console.log("something went wrong when comparint the three cirtical chars with each other");
 		}
 
 		realtext = realtext + subrealHtml.substring(0, posLink);
-		console.log("real after: " + realtext);
+		// console.log("real after: " + realtext);
 		var startContent = subrealHtml.indexOf(">") + 1;
-		console.log(startContent);
+		// console.log(startContent);
 		subrealHtml = subrealHtml.substring(startContent, subrealHtml.length);
 		// break
-		console.log("here the new subreal: " + subrealHtml);
+		// console.log("here the new subreal: " + subrealHtml);
 		// console.log(subrealHtml.indexOf("<a") > -1 || subrealHtml.indexOf("<span") > -1);
 	}
 	if(linksInRealHtml){
@@ -60,7 +116,6 @@ function getActualTextFromHtml(realHtml){
 	
 	return realtext
 }
-
 
 function look_for_targets(){ 
   	$('#contentArea').each(function(){
