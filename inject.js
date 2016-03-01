@@ -1,18 +1,15 @@
 $( document ).ready(function() {
-	
-	look_for_targets();
-
+	// look_for_targets();
+	// call the function every second
 	(function(){
 	    look_for_targets();
 	    setTimeout(arguments.callee, 1000);
 	})();
-
 });
 
 
 
 function getActualTextFromHtml(realHtml){
-	// var subrealHtml = realHtml.substring(0, realHtml.length);
 	var subrealHtml = realHtml;
 	var linksInRealHtml = false;
 	console.log("the full realhtml is this: " + subrealHtml);

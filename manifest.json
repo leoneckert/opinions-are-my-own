@@ -1,11 +1,15 @@
 {
-    "name": "oamo2",
+    "name": "Opinions Are My Own",
     "version": "2.0",
     "manifest_version": 2,
-    "description": "oamo2",
+    "description": "Plugin to prevent algorithms to read your opinions on Facebook. By Leon Eckert.",
     "browser_action": {
       "default_icon": "icon.png",
       "default_popup": "popup.html"
+    },
+    "icons": { "16": "icon16.png",
+           "48": "icon48.png",
+          "128": "icon128.png" 
     },
     "permissions": [
         "tabs", 
