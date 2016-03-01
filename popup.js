@@ -67,8 +67,12 @@ function scramble_line(text){
 	text_to_scramble = text;
 	scrambled_post = "";
 	for(var i = 0; i < text_to_scramble.length; i++){
+		
+		console.log("original letter: " + text_to_scramble[i]);
+		console.log("charcode before scrambling: " + text_to_scramble.charCodeAt(i));
 
 		var orig_charCode = text_to_scramble.charCodeAt(i);
+
 
 		if (orig_charCode > 31 && orig_charCode < 127){
 			unicIdx = (orig_charCode - 32) + i;
@@ -79,14 +83,16 @@ function scramble_line(text){
 			unicIdx = (128 - 32) + i;
 		}
 
+		console.log("code after conversion: " + unicIdx);
+
 		// console.log(unicIdx);
 
 		while(unicIdx > 96){
 			var x = Math.abs(unicIdx - 96);
 			unicIdx = 0 + x;
 		}
-		console.log(" the character: " + text_to_scramble[i]); 
-		console.log("original charcode: " + orig_charCode + " --> newCode: " + unicIdx);
+		
+		console.log("code after looping: " + unicIdx);
 
 		if(unicIdx > 96 || unicIdx < 0){
 			console.log("something didn't work while scrambling");
@@ -94,7 +100,11 @@ function scramble_line(text){
 
 		// scrambled_post = scrambled_post.concat(unicode[unicIdx]);\
 		new_charcode = convert_to_scrambled_charcode(unicIdx);
-		console.log("new code: " + unicIdx + " --> code after scrambling: " + new_charcode);
+
+		console.log("code after scrambling: " + new_charcode);
+		console.log("letter to print: " + String.fromCharCode(new_charcode));
+		console.log("----------------------------------------");
+
 		scrambled_post = scrambled_post.concat(String.fromCharCode(new_charcode));
 
 	}
@@ -103,7 +113,14 @@ function scramble_line(text){
 		var rn = Math.floor((Math.random() * 139));
 		str = str.concat(unicode[rn]);
 	}
+	console.log("--------------------------------------------------------------------------------");
 	return "[http://leoneckert.com/]" + scrambled_post
 	
 }
 
+
+
+			
+
+			
+			

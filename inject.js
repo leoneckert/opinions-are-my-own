@@ -14,7 +14,7 @@ function getActualTextFromHtml(realHtml){
 	var subrealHtml = realHtml.substring(0, realHtml.length);
 	var linksInRealHtml = false;
 
-	if(subrealHtml.indexOf("<a") > -1){
+	if(subrealHtml.indexOf("<a") > -1 || subrealHtml.indexOf("<span") > -1 || subrealHtml.indexOf("</") > -1){
 		var realtext = "";
 		linksInRealHtml = true;
 
@@ -25,32 +25,33 @@ function getActualTextFromHtml(realHtml){
 	while(subrealHtml.indexOf("<a") > -1 || subrealHtml.indexOf("<span") > -1 || subrealHtml.indexOf("</") > -1){
 
 		var posALink = subrealHtml.indexOf("<a");
-		// console.log("next a tag: " + posALink);
+		console.log("next a tag: " + posALink);
 		var posSPANLink = subrealHtml.indexOf("<span");
-		// console.log("next span tag: " + posSPANLink);
+		console.log("next span tag: " + posSPANLink);
 		var posENDLink = subrealHtml.indexOf("</");
-		// console.log("next END tag: " + posENDLink);
+		console.log("next END tag: " + posENDLink);
 
 		if(posALink < posSPANLink && posALink < posENDLink && posALink != -1){
 			posLink = posALink;
-			// console.log("the closes critical element is <a tag");
+			console.log("the closes critical element is <a tag");
 		}else if(posSPANLink < posENDLink && posSPANLink != -1){
 			posLink = posSPANLink;
-			// console.log("the closes critical element is <span tag");
+
+			console.log("the closes critical element is <span tag");
 		}else if(posENDLink != -1){
 			posLink = posENDLink;
-			// console.log("the closes critical element is /*> tag");
+			console.log("the closes critical element is /*> tag");
 		}else{
-			// console.log("something went wrong when comparint the three cirtical chars with each other");
+			console.log("something went wrong when comparint the three cirtical chars with each other");
 		}
 
 		realtext = realtext + subrealHtml.substring(0, posLink);
-		// console.log("real after: " + realtext);
+		console.log("real after: " + realtext);
 		var startContent = subrealHtml.indexOf(">") + 1;
-		// console.log(startContent);
+		console.log(startContent);
 		subrealHtml = subrealHtml.substring(startContent, subrealHtml.length);
-	
-		// console.log("here the new subreal: " + subrealHtml);
+		// break
+		console.log("here the new subreal: " + subrealHtml);
 		// console.log(subrealHtml.indexOf("<a") > -1 || subrealHtml.indexOf("<span") > -1);
 	}
 	if(linksInRealHtml){
@@ -69,8 +70,8 @@ function look_for_targets(){
   		// Lets start with status messages:
   		var p_tags = feed.find($('p'));
 
-  		console.log("[+] found " + p_tags.length + " <p> tags in total. ");
-  		console.log("[+] now analysing which one's I have to descramble.");
+  		// console.log("[+] found " + p_tags.length + " <p> tags in total. ");
+  		// console.log("[+] now analysing which one's I have to descramble.");
 
 
   		for(var i = 0; i < p_tags.length; i++){
@@ -80,24 +81,24 @@ function look_for_targets(){
   			console.log(s.innerText);
   			
   			if (s.innerText.substring(0, 24) == "[http://leoneckert.com/]") {
-  				console.log("[+] found one to descramble. This is its innerHTML in raw format: " + s.innerHTML);
-  				console.log("[+] Will find the actual text, while making sure, links (normally incidental hashtags cause problems) are not messing up the output.");
+  				// console.log("[+] found one to descramble. This is its innerHTML in raw format: " + s.innerHTML);
+  				// console.log("[+] Will find the actual text, while making sure, links (normally incidental hashtags cause problems) are not messing up the output.");
   				var realtext = s.innerText.substring(24, s.length);
   				var fullHtml = s.innerHTML;
-  				console.log(s.innerHTML);
+  				// console.log(s.innerHTML);
   				var beg_realHtml = s.innerHTML.indexOf("http://leoneckert.com/</a>]") + 27;
-  				console.log(beg_realHtml);
+  				// console.log(beg_realHtml);
   				var realHtml = fullHtml.substring(beg_realHtml, fullHtml.length);
-  				console.log(realHtml);
+  				// console.log(realHtml);
   				var actualText = getActualTextFromHtml(realHtml);
   				
-  				console.log("[+] The actual text: " + actualText);
+  				// console.log("[+] The actual text: " + actualText);
 
   				//now we can descramble the text:
   				descrambledText = descramble_line(actualText);
   				s.innerText = descrambledText;
 
-  				console.log("[+] The descrambled text: " + descrambledText);
+  				// console.log("[+] The descrambled text: " + descrambledText);
 
 			}
   		}
@@ -171,17 +172,6 @@ function look_for_targets(){
 }
 
 function convert_from_scrambled_charcode(bigNumber){
-	// if(bigNumber > -1 && bigNumber < 32){
-	// 	return bigNumber + 10272
-	// }else if(bigNumber > 31 && bigNumber < 64){
-	// 	return bigNumber + 9600 -31
-	// }else if(bigNumber > 63 && bigNumber < 75){
-	// 	return bigNumber + 9280 - 63
-	// }else if(bigNumber > 74 && bigNumber < 105){
-	// 	return bigNumber + 9568 - 74
-	// }else{
-	// 	return false
-	// }
 
 	if(bigNumber > 10271 && bigNumber < 10304){
 		return bigNumber - 10272
@@ -196,34 +186,105 @@ function convert_from_scrambled_charcode(bigNumber){
 	}
 }
 
+// function descramble_line(text){
+// 	text_to_descramble = text;
+// 	decrypted_post = "";
+// 	// if (already_decrypted(text) == false){
+// 		for(var i = 0; i < text_to_descramble.length; i++){
+// 			// console.log(post[i]);
+// 			// console.log(post.charCodeAt(i));
+// 			console.log("incoming code: " + text_to_descramble.charCodeAt(i) + " and after taking down: " + convert_from_scrambled_charcode(text_to_descramble.charCodeAt(i)));
+// 			// console.log( String.fromCharCode( post.charCodeAt(i) +10 ) );
+// 			console.log(text_to_descramble.charCodeAt(i));
+// 			new_charcode = text_to_descramble.charCodeAt(i) - i;
+// 			//assume its -8
+// 			// -8 - 32 = - 40 -> 40 255 - 40
+// 			while(new_charcode < 32){
+// 				var x = Math.abs(new_charcode - 32);
+// 				new_charcode = 127 - x;
+// 			}
+// 			// console.log("NEW CHARFCODE DE: ");
+// 			// console.log(new_charcode);
+// 			// if(new_charcode > 255 || new_charcode < 32){
+// 			// 	console.log("EERRRRRROORRRRRR");
+// 			// }
+
+// 			decrypted_post = decrypted_post.concat(String.fromCharCode(20000));
+// 			// decrypted_post = decrypted_post.concat('\u4DE4');
+// 		}
+// 		// console.log("length_decrypt: ");
+// 		// console.log(text.length);
+// 		return decrypted_post
+// 	// }else{
+// 	// 	return text_to_descramble
+// 	// }
+	
+// }
+
 function descramble_line(text){
+	console.log(text);
 	text_to_descramble = text;
 	decrypted_post = "";
 	// if (already_decrypted(text) == false){
 		for(var i = 0; i < text_to_descramble.length; i++){
 			// console.log(post[i]);
 			// console.log(post.charCodeAt(i));
-			console.log("incoming code: " + text_to_descramble.charCodeAt(i) + " and after taking down: " + convert_from_scrambled_charcode(text_to_descramble.charCodeAt(i)));
+			// console.log("incoming code: " + text_to_descramble.charCodeAt(i) + " and after taking down: " + convert_from_scrambled_charcode(text_to_descramble.charCodeAt(i)));
 			// console.log( String.fromCharCode( post.charCodeAt(i) +10 ) );
-			console.log(text_to_descramble.charCodeAt(i));
-			new_charcode = text_to_descramble.charCodeAt(i) - i;
-			//assume its -8
-			// -8 - 32 = - 40 -> 40 255 - 40
-			while(new_charcode < 32){
-				var x = Math.abs(new_charcode - 32);
-				new_charcode = 127 - x;
-			}
-			// console.log("NEW CHARFCODE DE: ");
-			// console.log(new_charcode);
-			// if(new_charcode > 255 || new_charcode < 32){
-			// 	console.log("EERRRRRROORRRRRR");
-			// }
+			// console.log("original letter: " + text_to_descramble[i]);
+			// console.log("charcode before descrambling: " + text_to_descramble.charCodeAt(i));
 
-			decrypted_post = decrypted_post.concat(String.fromCharCode(20000));
-			// decrypted_post = decrypted_post.concat('\u4DE4');
+			var code_after_descrambling = convert_from_scrambled_charcode(text_to_descramble.charCodeAt(i));
+			// console.log("code after descrambling: " + code_after_descrambling);
+			
+			new_charcode = code_after_descrambling; //will always be between 0 and 96
+
+			new_charcode = new_charcode - i;
+			// console.log("code after subtracting i: " + new_charcode);
+
+			while(new_charcode < 0){
+				var x = Math.abs(new_charcode - 0);
+				new_charcode = 96 - x;
+			}
+
+			// console.log("code after looping: " + new_charcode);
+
+			// console.log("i: " + new_charcode);
+
+		
+			
+			if (new_charcode == (95)){
+				// loop in here
+				new_charcode = 10;
+				decrypted_post = decrypted_post.concat(String.fromCharCode(new_charcode));
+				// console.log("charcode to print: " + new_charcode);
+				// console.log("letter to print: " + String.fromCharCode(new_charcode));
+
+			}else if (new_charcode == (95)){
+				// concate X
+				decrypted_post = decrypted_post.concat("X");
+				// console.log("charcode to print: " + "print X because unknown char");
+				// console.log("letter to print: " + "print X because unknown char");
+			}else{
+
+				new_charcode = new_charcode + 32
+				// loop gain?
+				// console.log("code after adding 32: " + new_charcode);
+
+				decrypted_post = decrypted_post.concat(String.fromCharCode(new_charcode));
+				// console.log("charcode to print: " + new_charcode);
+				// console.log("letter to print: " + String.fromCharCode(new_charcode));
+			}
+
+			
+			
+			console.log("----------------------------------------");
+
+		
 		}
 		// console.log("length_decrypt: ");
 		// console.log(text.length);
+		console.log("--------------------------------------------------------------------------------");
 		return decrypted_post
 	// }else{
 	// 	return text_to_descramble
