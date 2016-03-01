@@ -10,59 +10,10 @@ $( document ).ready(function() {
 });
 
 
-// function getActualTextFromHtml(realHtml){
-// 	var subrealHtml = realHtml.substring(0, realHtml.length);
-// 	var linksInRealHtml = false;
-
-// 	if(subrealHtml.indexOf("<a") > -1 || subrealHtml.indexOf("<span") > -1 || subrealHtml.indexOf("</") > -1){
-// 		var realtext = "";
-// 		linksInRealHtml = true;
-
-// 	}else{
-// 		var realtext = subrealHtml;
-// 	}
-  				
-// 	while(subrealHtml.indexOf("<a") > -1 || subrealHtml.indexOf("<span") > -1 || subrealHtml.indexOf("</") > -1){
-
-// 		var posALink = subrealHtml.indexOf("<a");
-// 		// console.log("next a tag: " + posALink);
-// 		var posSPANLink = subrealHtml.indexOf("<span");
-// 		// console.log("next span tag: " + posSPANLink);
-// 		var posENDLink = subrealHtml.indexOf("</");
-// 		// console.log("next END tag: " + posENDLink);
-
-// 		if(posALink < posSPANLink && posALink < posENDLink && posALink != -1){
-// 			posLink = posALink;
-// 			// console.log("the closes critical element is <a tag");
-// 		}else if(posSPANLink < posENDLink && posSPANLink != -1){
-// 			posLink = posSPANLink;
-
-// 			console.log("the closes critical element is <span tag");
-// 		}else if(posENDLink != -1){
-// 			posLink = posENDLink;
-// 			// console.log("the closes critical element is /*> tag");
-// 		}else{
-// 			// console.log("something went wrong when comparint the three cirtical chars with each other");
-// 		}
-
-// 		realtext = realtext + subrealHtml.substring(0, posLink);
-// 		// console.log("real after: " + realtext);
-// 		var startContent = subrealHtml.indexOf(">") + 1;
-// 		// console.log(startContent);
-// 		subrealHtml = subrealHtml.substring(startContent, subrealHtml.length);
-// 		// break
-// 		// console.log("here the new subreal: " + subrealHtml);
-// 		// console.log(subrealHtml.indexOf("<a") > -1 || subrealHtml.indexOf("<span") > -1);
-// 	}
-// 	if(linksInRealHtml){
-// 		realtext = realtext + subrealHtml;
-// 	}
-	
-// 	return realtext
-// }
 
 function getActualTextFromHtml(realHtml){
-	var subrealHtml = realHtml.substring(0, realHtml.length);
+	// var subrealHtml = realHtml.substring(0, realHtml.length);
+	var subrealHtml = realHtml;
 	var linksInRealHtml = false;
 	console.log("the full realhtml is this: " + subrealHtml);
 
@@ -86,13 +37,19 @@ function getActualTextFromHtml(realHtml){
 			posLink = posALink;
 			// console.log("the closes critical element is <a tag");
 		}else if(posSPANLink < posENDLink && posSPANLink != -1){
-			posLink = posSPANLink;
+			posLink = posSPANLink;		
+			// console.log("the closes critical element is <span tag");
 			//here an exception for "See more "spans
-			console.log(subrealHtml.substring(posLink, posLink + 32))
-			console.log("the closes critical element is <span tag");
-			if(subrealHtml.substring(posLink, posLink + 32) == '<span class="text_exposed_hide">'){
+			var potentialSeeMoreSpan = subrealHtml.substring(posLink, posLink + 32);
+			if(potentialSeeMoreSpan == '<span class="text_exposed_hide">'){
 				var afterDots = posLink + 32 + 3;
 				subrealHtml = subrealHtml.substring(0, posLink) + subrealHtml.substring(afterDots, subrealHtml.length);
+			}else if(potentialSeeMoreSpan == '<span class="text_exposed_link">'){
+				realtext = realtext + subrealHtml.substring(0, posLink);
+				console.log("realtext in here:" + realtext);
+				subrealHtml = subrealHtml.substring(0, posLink);
+				console.log("new subreal in here:" + subrealHtml);
+				break
 			}
 		}else if(posENDLink != -1){
 			posLink = posENDLink;
@@ -141,9 +98,16 @@ function look_for_targets(){
   				var realtext = s.innerText.substring(24, s.length);
   				var fullHtml = s.innerHTML;
   				// console.log(s.innerHTML);
-  				var beg_realHtml = s.innerHTML.indexOf("http://leoneckert.com/</a>]") + 27;
-  				// console.log(beg_realHtml);
-  				var realHtml = fullHtml.substring(beg_realHtml, fullHtml.length);
+  				if(fullHtml.substring(0, 24) == "[http://leoneckert.com/]"){
+  					//this is for extra long "continue reading posts"
+  					var beg_realHtml = s.innerHTML.indexOf("[http://leoneckert.com/]") + 24;
+  					var realHtml = fullHtml.substring(beg_realHtml, fullHtml.length - 3);
+  				}else{
+  					var beg_realHtml = s.innerHTML.indexOf("http://leoneckert.com/</a>]") + 27;
+  					var realHtml = fullHtml.substring(beg_realHtml, fullHtml.length);
+  				}
+  
+
   				// console.log(realHtml);
   				var actualText = getActualTextFromHtml(realHtml);
   				
@@ -277,7 +241,7 @@ function convert_from_scrambled_charcode(bigNumber){
 // }
 
 function descramble_line(text){
-	console.log(text);
+	// console.log(text);
 	text_to_descramble = text;
 	decrypted_post = "";
 	// if (already_decrypted(text) == false){
@@ -333,13 +297,13 @@ function descramble_line(text){
 
 			
 			
-			console.log("----------------------------------------");
+			// console.log("----------------------------------------");
 
 		
 		}
 		// console.log("length_decrypt: ");
 		// console.log(text.length);
-		console.log("--------------------------------------------------------------------------------");
+		// console.log("--------------------------------------------------------------------------------");
 		return decrypted_post
 	// }else{
 	// 	return text_to_descramble
