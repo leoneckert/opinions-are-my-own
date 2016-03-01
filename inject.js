@@ -115,61 +115,61 @@ function look_for_targets(){
 			}
   		}
 
-  	// 	// now let's take care of comments:
+  		// now let's take care of comments:
 
-  	// 	var comments = feed.find($('.UFICommentBody'));
+  		var comments = feed.find($('.UFICommentBody'));
   	 
-  	// 	for(var i = 0; i < comments.length; i++){
-  	// 		// console.log(p_tags[i]);
-  	// 		var s = comments[i];
-  	// 		console.log("this is the comments inner HTML " + s.innerHTML);
-  	// 		console.log("this is the comments inner Text: " + s.innerText);
+  		for(var i = 0; i < comments.length; i++){
+  			// console.log(p_tags[i]);
+  			var s = comments[i];
+  			console.log("this is the comments inner HTML " + s.innerHTML);
+  			console.log("this is the comments inner Text: " + s.innerText);
   			
-  	// 		if (s.innerText.substring(0, 24) == "[http://leoneckert.com/]") {
-  	// 			// console.log("[+] found one to descramble. This is its innerHTML in raw format: " + s.innerHTML);
-  	// 			// console.log("[+] Will find the actual text, while making sure, links (normally incidental hashtags cause problems) are not messing up the output.");
-  	// 			var realtext = s.innerText.substring(24, s.length);
-  	// 			var fullHtml = s.innerHTML;
-  	// 			// console.log(s.innerHTML);
-  	// 			console.log(realtext.substring(realtext.length - 11, realtext.length));
+  			if (s.innerText.substring(0, 33) == "[decode.this.post.leoneckert.com]") {
+  				// console.log("[+] found one to descramble. This is its innerHTML in raw format: " + s.innerHTML);
+  				// console.log("[+] Will find the actual text, while making sure, links (normally incidental hashtags cause problems) are not messing up the output.");
+  				var realtext = s.innerText.substring(33, s.length);
+  				var fullHtml = s.innerHTML;
+  				// console.log(s.innerHTML);
+  				console.log(realtext.substring(realtext.length - 11, realtext.length));
 
-  	// 			var seeMore = false;
+  				var seeMore = false;
 
-  	// 			if(realtext.substring(realtext.length - 11, realtext.length) == "...See more"){
-  	// 				var realtext = realtext.substring(realtext, realtext.length - 11);
+  				if(realtext.substring(realtext.length - 11, realtext.length) == "...See more"){
+  					var realtext = realtext.substring(realtext, realtext.length - 11);
 
-  	// 				var spotToFind =   realtext.substring((realtext.length/2), realtext.length) + "</span>";
-  	// 				console.log("in the end we want to find: " + spotToFind);
-  	// 				var htmlIdxToCutOff = fullHtml.indexOf(spotToFind);
-  	// 				var addInTheEnd = fullHtml.substring(htmlIdxToCutOff + spotToFind.length - 7, fullHtml.length)
-  	// 				console.log(addInTheEnd);
-  	// 				seeMore = true;
-  	// 			}
+  					var spotToFind =   realtext.substring((realtext.length/2), realtext.length) + "</span>";
+  					console.log("in the end we want to find: " + spotToFind);
+  					var htmlIdxToCutOff = fullHtml.indexOf(spotToFind);
+  					var addInTheEnd = fullHtml.substring(htmlIdxToCutOff + spotToFind.length - 7, fullHtml.length)
+  					console.log(addInTheEnd);
+  					seeMore = true;
+  				}
 
 
   
 
-  	// 			// console.log(realHtml);
-  	// 			var actualText = getActualTextFromHtml(realtext);
+  				// console.log(realHtml);
+  				var actualText = getActualTextFromHtml(realtext);
   				
-  	// 			// console.log("[+] The actual text: " + actualText);
+  				// console.log("[+] The actual text: " + actualText);
 
-  	// 			//now we can descramble the text:
-  	// 			if(seeMore){
-  	// 				descrambledText = '<span><a></a>' + descramble_line(actualText) + addInTheEnd;
-  	// 				console.log("new html" + descrambledText);
-  	// 				console.log("still inner html: " + s.innerHTML);
-  	// 				s.innerHTML = descrambledText;
-  	// 			}else{
-  	// 				descrambledText = descramble_line(actualText);
-  	// 				s.innerText = descrambledText;
-  	// 			}
+  				//now we can descramble the text:
+  				if(seeMore){
+  					descrambledText = '<span><a></a>' + descramble_line(actualText) + addInTheEnd;
+  					console.log("new html" + descrambledText);
+  					console.log("still inner html: " + s.innerHTML);
+  					s.innerHTML = descrambledText;
+  				}else{
+  					descrambledText = descramble_line(actualText);
+  					s.innerText = descrambledText;
+  				}
   				
 
-  	// 			// console.log("[+] The descrambled text: " + descrambledText);
+  				// console.log("[+] The descrambled text: " + descrambledText);
 
-			// }
-  	// 	}
+			}
+  		}
   		
 		
 
