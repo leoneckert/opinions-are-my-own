@@ -4,26 +4,55 @@
         <style>
             body { 
                 min-width: 420px; 
-                overflow-x: hidden; 
-                font-family: Arial, sans-serif; 
-                font-size: 12px; 
+                /*overflow-x: hidden; */
+                /*font-family: Arial, sans-serif; */
+                font-size: 12px;
+                background-color: black; 
             }
-            input, textarea { 
+            p, h2, a{
+                color: white;
+            }
+            #in{
+
+                width:420px;
+                /*overflow: scroll;*/
+                word-wrap: break-word;
+            }
+            #clickHere{
+                font-size: 14px;
                 width: 420px; 
+                /*margin-left: 20px;*/
+                margin-top: 20px;
+                margin-bottom: 30px;
+
             }
-            input#save { 
-                font-weight: bold; width: auto; 
+            #out_wrapper{
+                width: 420px;
+            }
+            #copyTarget{
+                width:420px;
+                /*overflow: scroll;*/
+                word-wrap: break-word;
+            }
+            #copyButton{
+                font-size: 14px;
+                margin-top: 20px;
+                margin-bottom: 30px;
+                width: 420px;          
             }
         </style>
         
     </head>
     <body>
-        <p>Insert your text to encrypt here:</p>
+        <h2>Opinions Are My Own</h2>
+        <p>Enter the text you want to post:</p>
         <textarea autofocus id="in" cols="30" rows="10"></textarea>
-        <input type="submit" id="clickHere" value="Encrypt!" >
-        <p id="out"></p>
-         <!-- <textarea name="leon" id="out" cols="30" rows="10" placeholder="h"></textarea> -->
-
+        <button id="clickHere">Scramble!</button>
+        <!-- <div id="out_wrapper"><p id="out"></p></div> -->
+        <textarea disabled name="leon" id="copyTarget" cols="30" rows="10" ></textarea>
+        <button id="copyButton">Copy to clipboard</button>
+        <!-- <input type="text" placeholder="Click here and press Ctrl-V to see clipboard contents"> -->
+        <p><a href="http://decode.this.post.leoneckert.com/" target="_blank">Project by Leon Eckert</a></p>
         <script src="jquery.js"></script>
         <script src="dict.js"></script>
         <script src="popup.js"></script>
