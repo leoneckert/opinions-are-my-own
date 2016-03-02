@@ -82,10 +82,10 @@ function scramble_line(text){
 
 	}
 	var str = "";
-	for (var i = 0 ; i < 100; i++){
-		var rn = Math.floor((Math.random() * 139));
-		str = str.concat(unicode[rn]);
-	}
+	// for (var i = 0 ; i < 100; i++){
+	// 	var rn = Math.floor((Math.random() * 139));
+	// 	str = str.concat(unicode[rn]);
+	// }
 	console.log("--------------------------------------------------------------------------------");
 	return "[decode.this.post.leoneckert.com]" + scrambled_post
 	
