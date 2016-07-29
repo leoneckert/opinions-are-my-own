@@ -1,6 +1,6 @@
 # Opinions Are My Own - Chrome Extension
 
-The concept behind this project can be found here: [http://leoneckert.com/opinions-are-my-own.html](http://leoneckert.com/opinions-are-my-own.html)
+Project site: [http://leoneckert.com/opinions-are-my-own.html](http://leoneckert.com/opinions-are-my-own.html)
 
 ## Share opinions with your friends, not with facebook.
 
