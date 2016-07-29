@@ -2,7 +2,7 @@
 
 The concept behind this project can be found here: [http://leoneckert.com/opinions-are-my-own.html](http://leoneckert.com/opinions-are-my-own.html)
 
-## Share your opinions with your friends, not with facebook.
+## Share opinions with your friends, not with facebook.
 
 The **OAMO Chrome Plugin** has two functions.<br> 
 
